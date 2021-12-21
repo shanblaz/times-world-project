@@ -30,6 +30,7 @@ function Home() {
                     </div>
                     <div>
                         <ShoppingCartIcon/>
+                        <div className='cartCount'>2</div>
                     </div>
                 </div>
             </div>

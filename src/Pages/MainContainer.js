@@ -2,14 +2,12 @@
 
 
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import _ from 'lodash'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -22,7 +20,7 @@ function TabPanel(props) {
             aria-labelledby={`${index}`}
             {...other}
         >
-            {value == index && (
+            {value === index && (
                 <Box sx={{ p: 3 }}>
                     <Typography>{children}</Typography>
                 </Box>
@@ -41,8 +39,11 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs(props) {
-    const [value, setValue] = React.useState(0);
-    const [count, setCount] = React.useState(0);
+    const [value, setValue] = useState(0);
+    const [data, setData] = useState({});
+    useEffect(() => {
+        setData(props.data)
+    },[props]);
     const handleChange = (event,newId) => {
         setValue(newId);
     };
@@ -53,18 +54,18 @@ export default function BasicTabs(props) {
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs style={{overflow: 'auto'}} value={value} onChange={handleChange} aria-label="basic tabs example">
-                    {props.data?.table_menu_list?.map((x,index)=>
+                    {data?.table_menu_list?.map((x,index)=>
                         <Tab label={x.menu_category} {...a11yProps(x.menu_category_id)} />
                     )}
                 </Tabs>
             </Box>
-            {props?.data?.table_menu_list?.map((x,index)=>
+            {data?.table_menu_list?.map((x,index)=>
                 <TabPanel value={value} index={index}>
                     {x.category_dishes.map((dish)=>{
                         return <div className='w-100 d-flex border-bottom mb-3'>
                             <div className='col-9 d-flex'>
                                 <div style={{padding: '0px 5px'}}>
-                                    {dish.dish_Type == 2 ? <img style={{width: '15px'}} src='/images/grrend.png'/> : <img style={{width: '15px'}} src='/images/redd.png'/>}
+                                    {dish.dish_Type === 2 ? <img alt="veg" style={{width: '15px'}} src='/images/grrend.png'/> : <img alt='non veg' style={{width: '15px'}} src='/images/redd.png'/>}
                                 </div>
                                 <div className='w-100'>
                                     <div style={{fontWeight: '600'}} className='text-start'>
@@ -84,12 +85,12 @@ export default function BasicTabs(props) {
                                     <div className='text-start'>
                                         {dish.dish_Availability ? <div className="fd-add-sbs mobile-fd-add-sbs">
                                             <div className="fd-subtract" >
-                                                <RemoveIcon onClick={()=>setCount(count - 1)}/>
+                                                <RemoveIcon onClick={()=> dish.count = (dish.count ? dish.count : 0) - 1}/>
                                             </div>
 
-                                            <div className="fd-counter">{count}</div>
+                                            <div className="fd-counter">{dish.count ? dish.count : 0}</div>
                                             <div className="fd-add">
-                                                <AddIcon onClick={()=>setCount(count + 1)}/>
+                                                <AddIcon onClick={()=> dish.count = (dish.count ? dish.count : 0) + 1}/>
                                             </div>
                                         </div>:<div style={{color: 'red'}}>Not available</div>}
                                     </div>
@@ -97,7 +98,7 @@ export default function BasicTabs(props) {
                             </div>
                             <div style={{height: '100px'}} className='col-3 d-flex justify-content-end'>
                                 <div style={{height: '80px', width: '130px', overflow: 'hidden', borderRadius: '10px'}}>
-                                    <img style={{width: '100%', borderRadius: '5px'}} src={dish.dish_image}/>
+                                    <img alt='dishes' style={{width: '100%', borderRadius: '5px'}} src={dish.dish_image}/>
                                 </div>
                             </div>
                         </div>

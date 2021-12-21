@@ -23,3 +23,18 @@
 .css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected{
   color: red !important;
 }
+.MuiTabs-flexContainer{
+  overflow: auto !important;
+}
+.cartCount{
+  display: flex;
+  position: relative;
+  top: -24px;
+  background: red;
+  height: 15px;
+  width: 13px;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  left: 17px;
+}
