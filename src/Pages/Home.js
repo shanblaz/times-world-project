@@ -6,6 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function Home() {
     const [data, setData] = useState(0);
+    const [cartCount, setCartCount] = useState(0);
     useEffect(() => {
         axios({
             method: 'get',
@@ -30,11 +31,11 @@ function Home() {
                     </div>
                     <div>
                         <ShoppingCartIcon/>
-                        <div className='cartCount'>2</div>
+                        <div className='cartCount'>{cartCount}</div>
                     </div>
                 </div>
             </div>
-            <MainContainer data={data}/>
+            {data ? <MainContainer data={data} cartCount={cartCount} setCartCount={setCartCount}/> : <div></div>}
         </div>
     )
 }
