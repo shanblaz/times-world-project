@@ -70,7 +70,7 @@ export default class main extends Component {
         return (
             <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs style={{overflow: 'auto'}} value={this.state.value} onChange={()=>this.handleChange} aria-label="basic tabs example">
+                <Tabs style={{overflow: 'auto'}} value={this.state.value} onChange={(event,newId)=>this.handleChange(event,newId)} aria-label="basic tabs example">
                     {this.state.data?.table_menu_list?.map((x,index)=>
                         <Tab label={x.menu_category} {...a11yProps(x.menu_category_id)} />
                     )}
