@@ -1,9 +1,20 @@
 import './App.css';
-import Home from './Pages/Home';
+import SignIn from './Pages/SignIn';
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
+import MainContainer from './Pages/MainContainer';
 function App() {
   return (
     <div className="App">
-      <Home/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={< SignIn/>} />
+          <Route path="home" element={<MainContainer />} />
+        </Routes>
+      </BrowserRouter>,
     </div>
   );
 }

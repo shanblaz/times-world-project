@@ -1,128 +1,58 @@
-import React, { Component } from 'react'
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import React, { useEffect, useState } from 'react'
+import axios from "axios";
+import Countries from './Countries';
+import { Tabs, Tab } from 'react-bootstrap';
+import _ from 'lodash'
+import {SocialMediaIconsReact} from 'social-media-icons-react';
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
+function MainContainer() {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        axios({
+            method: 'get',
+            url: 'https://restcountries.com/v2/all?fields=name,region,flag',
+        }).then((response)=>{
+            setData(response.data)
+            setLoading(false)
+        })
+    },[]);
+    console.log(data,'rrrr')
     return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`${index}`}
-            aria-labelledby={`${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
+        <div className='h-100 mainPage'>
+            <div>
+                <div className='h5 text-start'>
+                    Countries
+                </div>
+            </div>
+            <Tabs defaultActiveKey="all" id="uncontrolled-tab-example" className=" custom-tab mb-3 justify-content-end">
+                <Tab eventKey="all" title="All">
+                    <Countries loading={loading} data={data} />
+                </Tab>
+                <Tab eventKey="asia" title="Asia">
+                    <Countries loading={loading}  data={_.filter(data, function(o) { return o.region === "Asia" })}/>
+                </Tab>
+                <Tab eventKey="europe" title="Europe">
+                    <Countries loading={loading}  data={_.filter(data, function(o) { return o.region === "Europe" })}/>
+                </Tab>
+            </Tabs>  
+            <footer>
+                <div className='mt-3'>
+                    <div className='col-12 d-flex justify-content-center'>
+                        <SocialMediaIconsReact borderColor="rgba(17,17,17,1)" borderWidth="1" borderStyle="solid" icon="googleplus" iconColor="rgba(23,22,22,1)" backgroundColor="rgba(255,255,255,1)" iconSize="2" roundness="50%" url="https://some-website.com/my-social-media-url" size="40" />
+                        <SocialMediaIconsReact borderColor="rgba(17,17,17,1)" borderWidth="1" borderStyle="solid" icon="facebook" iconColor="rgba(23,22,22,1)" backgroundColor="rgba(255,255,255,1)" iconSize="2" roundness="50%" url="https://some-website.com/my-social-media-url" size="40" />
+                        <SocialMediaIconsReact borderColor="rgba(17,17,17,1)" borderWidth="1" borderStyle="solid" icon="linkedin" iconColor="rgba(23,22,22,1)" backgroundColor="rgba(255,255,255,1)" iconSize="2" roundness="50%" url="https://some-website.com/my-social-media-url" size="40" />
+                        <SocialMediaIconsReact borderColor="rgba(17,17,17,1)" borderWidth="1" borderStyle="solid" icon="twitter" iconColor="rgba(23,22,22,1)" backgroundColor="rgba(255,255,255,1)" iconSize="2" roundness="50%" url="https://some-website.com/my-social-media-url" size="40" />
+                    </div>
+                    <div>
+                        <div className='h6 m-4'>example@email.com</div>
+                        <div className='h6 m-4'>Copyright © 2020 Name. All rights reserved.</div>
+                    </div>
+                </div>
+            </footer>          
         </div>
-    );
+    )
 }
 
-function a11yProps(index) {
-    return {
-        id: `${index}`,
-        tabindex: `${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
+export default MainContainer
 
-export default class main extends Component {
-    constructor(props) {
-        super(props);
-        this.state={
-            value: 0,
-            data: {}
-        }
-    }
-    handleChange = (event,newId) => {
-        this.setState({value: newId});
-    };
-    componentDidMount=()=>{
-        this.setState({data: this.props.data})
-    }
-
-    decreaseCount = (dishIndex,index) => {
-        let prevData = this.state.data
-        if(prevData.table_menu_list[index].category_dishes[dishIndex].count){
-            prevData.table_menu_list[index].category_dishes[dishIndex].count = (prevData.table_menu_list[index].category_dishes[dishIndex].count ? prevData.table_menu_list[index].category_dishes[dishIndex].count : 0) - 1;
-            this.props.setCartCount(this.props.cartCount - 1)
-        }
-        this.setState({data: prevData})
-        console.log(prevData.table_menu_list[index].category_dishes[dishIndex],'vvvvvv')
-
-    }
-    increaseCount = (dishIndex,index) => {
-        let prevData = this.state.data
-        this.props.setCartCount(this.props.cartCount + 1)
-        prevData.table_menu_list[index].category_dishes[dishIndex].count = (prevData.table_menu_list[index].category_dishes[dishIndex].count ? prevData.table_menu_list[index].category_dishes[dishIndex].count : 0) + 1
-        this.setState({data: prevData})
-
-    }
-    render() {
-        return (
-            <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs style={{overflow: 'auto'}} value={this.state.value} onChange={(event,newId)=>this.handleChange(event,newId)} aria-label="basic tabs example">
-                    {this.state.data?.table_menu_list?.map((x,index)=>
-                        <Tab label={x.menu_category} {...a11yProps(x.menu_category_id)} />
-                    )}
-                </Tabs>
-            </Box>
-            {this.state.data?.table_menu_list?.map((x,index)=>
-                <TabPanel value={this.state.value} index={index}>
-                    {x.category_dishes.map((dish,dishIndex)=>{
-                        return <div id={dish.dish_id} className='w-100 d-flex border-bottom mb-3'>
-                            <div className='col-9 d-flex'>
-                                <div style={{padding: '0px 5px'}}>
-                                    {dish.dish_Type === 2 ? <img alt="veg" style={{width: '15px'}} src='/images/grrend.png'/> : <img alt='non veg' style={{width: '15px'}} src='/images/redd.png'/>}
-                                </div>
-                                <div className='w-100'>
-                                    <div style={{fontWeight: '600'}} className='text-start'>
-                                        {dish.dish_name}
-                                    </div>
-                                    <div style={{fontWeight: '500'}} className='d-flex justify-content-between'>
-                                        <div>
-                                            {dish.dish_currency + " " + dish.dish_price}
-                                        </div>
-                                        <div>
-                                            {dish.dish_calories + " Calories"}
-                                        </div>
-                                    </div>
-                                    <div style={{fontSize: '12px',color: 'grey'}} className='text-start'>
-                                        {dish.dish_description}
-                                    </div>
-                                    <div className='text-start'>
-                                        {dish.dish_Availability ? <div className="fd-add-sbs mobile-fd-add-sbs">
-                                            <div className="fd-subtract" >
-                                                <RemoveIcon onClick={()=> this.decreaseCount(dishIndex,index)}/>
-                                            </div>
-
-                                            <div className="fd-counter">{dish.count ? dish.count : 0}</div>
-                                            <div className="fd-add">
-                                                <AddIcon onClick={()=> this.increaseCount(dishIndex,index)}/>
-                                            </div>
-                                        </div>:<div style={{color: 'red'}}>Not available</div>}
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{height: '100px'}} className='col-3 d-flex justify-content-end'>
-                                <div style={{height: '80px', width: '130px', overflow: 'hidden', borderRadius: '10px'}}>
-                                    <img alt='dishes' style={{width: '100%', borderRadius: '5px'}} src={dish.dish_image}/>
-                                </div>
-                            </div>
-                        </div>
-                    })}
-                </TabPanel>
-            )}
-        </Box>
-        )
-    }
-}
